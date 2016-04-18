@@ -18,4 +18,9 @@ describe Oystercard do
     message = "Maximum balance of #{max_balance} exceeded"
     expect { oystercard.top_up(90) }.to raise_error message
   end
+  it 'deducts the journey fare from my card' do
+    oystercard.top_up(90)
+    expect { oystercard.deduct(5) }.to change { oystercard.balance }.by -5
+  end
+
 end
