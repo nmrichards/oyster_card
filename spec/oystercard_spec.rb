@@ -37,4 +37,19 @@ describe Oystercard do
     expect{ subject.deduct 10 }.to change{ subject.balance }.by -10
   end
 
+  it 'touches in for a journey' do 
+    subject.top_up(5)
+    subject.touch_in
+    expect(subject).to be_in_journey
+  end
+
+  it 'touches out to end a journey' do 
+    subject.touch_out
+    expect(subject).not_to be_in_journey
+  end
+
+  it 'raises an error if the miniumum amount is not met' do 
+    expect { subject.touch_in }.to raise_error 'Insufficient funds'
+  end
+
 end
