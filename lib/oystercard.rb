@@ -4,12 +4,12 @@ class Oystercard
   MAXIMUM_BALANCE = 90
   ERR_MAX_BALANCE = "Cannot proceed - maxium balance".freeze
   ERR_MIN_BALANCE = "Insufficient funds".freeze
-  
-  attr_reader :balance
 
-  def initialize 
+  attr_reader :balance, :entry_station
+
+  def initialize
     @balance = 0
-    @status = false
+    @entry_station = nil
   end
 
   def top_up(amount)
@@ -17,22 +17,23 @@ class Oystercard
     @balance += amount
   end
 
-  def deduct(fare)
-    @balance -= fare
-  end
-
-  def touch_in
+  def touch_in(station)
     fail ERR_MIN_BALANCE if @balance < MINIMUM_BALANCE
-    in_journey?
-    @status = true
+    @entry_station = station
   end
 
-  def in_journey? 
-    @status 
+  def in_journey?
+    !!@entry_station
   end
 
   def touch_out
-    @status = false
+    deduct(MINIMUM_BALANCE)
+    @entry_station = nil
+  end
+
+  private
+  def deduct(fare)
+    @balance -= fare
   end
 
 end
