@@ -16,7 +16,7 @@ describe Oystercard do
   end
 
   it 'allows user to top up' do
-    random = rand(100)
+    random = rand(Oystercard::MAXIMUM_BALANCE)
     expect { oystercard.top_up random }.to change { oystercard.balance }.by random
   end
 
@@ -27,22 +27,33 @@ describe Oystercard do
     expect { oystercard.top_up(90) }.to raise_error message
   end
 
-  it 'deducts the journey fare from my card' do
-    oystercard.top_up(90)
-    expect { oystercard.deduct(5) }.to change { oystercard.balance }.by -5
+  describe "#touch_in" do
+
+    it 'touches in and reports in use' do
+      oystercard.top_up(20)
+      oystercard.touch_in
+      expect(oystercard).to be_in_journey
+    end
+
+    it 'raises an error if card doesn\'t have minimum amount' do
+      expect{oystercard.touch_in}.to raise_error "Insufficient funds"
+    end
+
   end
 
-  it 'touches in and reports in use' do
-    # oystercard.top_up(20)
-    oystercard.touch_in
-    expect(oystercard).to be_in_journey
-  end
+  describe "#touch_out" do
+    before (:each) do
+      oystercard.top_up(20)
+      oystercard.touch_in
+    end
 
-  it 'touches out and ends journey' do
-    # oystercard.top_up(20)
-    oystercard.touch_in
-    oystercard.touch_out
-    expect(oystercard).not_to be_in_journey
-  end
+    it 'touches out and ends journey' do
+      oystercard.touch_out
+      expect(oystercard).not_to be_in_journey
+    end
 
+    it 'deducts minimum fare' do
+      expect{oystercard.touch_out}.to change {oystercard.balance}.by -Oystercard::MINIMUM_BALANCE
+    end
+  end
 end
