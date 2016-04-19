@@ -1,7 +1,7 @@
 require 'oystercard'
 
 describe Oystercard do
-  let(:station)       { double :station }
+  let(:station)       { double :station, name: 'London', zone: 1 }
   let(:entry_station) { double :entry_station }
   let(:exit_station)  { double :exit_station}
   let(:oystercard)    { Oystercard.new }
@@ -13,7 +13,7 @@ describe Oystercard do
     end
 
     it 'has a starting balance of zero' do
-      expect(subject.balance).to eq 0
+      expect(oystercard.balance).to eq 0
     end
 
   context 'Needs a top up'
@@ -35,6 +35,12 @@ describe Oystercard do
 
     it 'raises an error if the miniumum amount is not met' do
       expect { subject.touch_in(station) }.to raise_error 'Insufficient funds'
+    end
+
+    it "raises an error if user didn't touch out" do
+      oystercard.top_up(50)
+      oystercard.touch_in station
+      expect{oystercard.touch_in station}.to raise_error "Failed to touch out"
     end
 
   context 'Touches in at a station'
@@ -73,14 +79,14 @@ describe Oystercard do
       expect(subject.entry_station).to eq nil
     end
 
-    it 'stores a list of journeys' do 
+    it 'stores a list of journeys' do
       subject.top_up(5)
       subject.touch_in(entry_station)
       subject.touch_out(exit_station)
       expect(subject.journeys).to include(entry_station => exit_station)
     end
 
-    it 'has no journey history by default' do 
+    it 'has no journey history by default' do
       expect(subject.journeys).to be_empty
     end
 
