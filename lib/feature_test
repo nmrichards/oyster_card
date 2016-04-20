@@ -1,0 +1,6 @@
+oyster = Oystercard.new
+oyster.top_up 20
+station = 'London'
+other_station = 'Old Street'
+oyster.touch_in station
+oyster.touch_out other_station
