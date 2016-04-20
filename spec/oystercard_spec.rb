@@ -64,7 +64,7 @@ describe Oystercard do
 
   end
 
-  describe "#touch_out" do
+  describe '#touch_out' do
     before (:each) do
       oystercard.top_up(20)
       oystercard.touch_in(entry_station)
