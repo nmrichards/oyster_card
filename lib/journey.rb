@@ -1,3 +1,4 @@
+
 class Journey
   attr_reader :card, :entry_station, :fares, :journeys
   MINIMUM_FARE = 1
@@ -13,10 +14,6 @@ class Journey
     @entry_station = entry_station
   end
 
-  def end_journey(exit_station)
-    @exit_station = exit_station
-  end
-
   def complete?
     @entry_station != nil && @exit_station != nil ? true : false
   end
@@ -26,8 +23,9 @@ class Journey
   end
 
   def finish(exit_station)
-    card.deduct(fares)
-    @journeys = {entry_station: exit_station}
+    @exit_station = exit_station
+    fare
+    @journeys = {@entry_station => exit_station}
   end
 
 end

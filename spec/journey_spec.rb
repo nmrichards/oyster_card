@@ -5,8 +5,6 @@ describe Journey do
   let(:entry_station)   { double :entry_station }
   let(:exit_station )   { double :exit_station  }
   subject(:journey){described_class.new oystercard}
-  it{is_expected.to respond_to :start_journey}
-  it{is_expected.to respond_to :end_journey}
 
   it 'starts a journey' do
     expect(journey.start_journey entry_station).to eq entry_station
@@ -14,20 +12,21 @@ describe Journey do
 
   it 'ends a journey' do
     journey.start_journey entry_station
-    expect(journey.end_journey exit_station).to eq exit_station
+    journey.finish exit_station
+    expect(journey.complete?).to eq true
   end
 
   context 'paying for journey' do
     it 'takes off the minimum fare'do
       journey.start_journey entry_station
-      journey.end_journey exit_station
+      journey.finish exit_station
       expect(journey.fare).to eq journey.fares
     end
   end
 
   it 'completes a journey' do
     journey.start_journey entry_station
-    journey.end_journey exit_station
+    journey.finish exit_station
     expect(journey).to be_complete
   end
 
