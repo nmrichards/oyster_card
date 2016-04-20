@@ -25,7 +25,7 @@ class Journey
   def finish(exit_station)
     @exit_station = exit_station
     fare
-    @journeys = {@entry_station => exit_station}
+    @journeys = { @entry_station => exit_station }
   end
 
 end
