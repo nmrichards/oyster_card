@@ -12,14 +12,14 @@ describe Oystercard do
   end
 
   it 'allows user to top up' do
-    random = rand(Oystercard::MAXIMUM_BALANCE)
+    random = rand(Oystercard::BALANCE_LIMIT)
     expect { oystercard.top_up random }.to change { oystercard.balance }.by random
   end
 
   it 'raises an error if the maximum allowable balance is exceeded' do
-    max_balance = Oystercard::MAXIMUM_BALANCE
+    max_balance = Oystercard::BALANCE_LIMIT
     oystercard.top_up(max_balance)
-    message = "Maximum balance of #{max_balance} exceeded"
+    message = "Your balance cannot exceed £#{max_balance}"
     expect { oystercard.top_up(90) }.to raise_error message
   end
 
@@ -41,16 +41,15 @@ describe Oystercard do
   describe '#touch_out' do
     before (:each) do
       oystercard.top_up(20)
-      oystercard.touch_in(entry_station)
     end
-
-    it '"forgets" the entry station' do
-      oystercard.touch_out(exit_station)
-      expect(oystercard.entry_station).to eq nil
+    it 'deducts penalty fare' do
+      expect{oystercard.touch_out(exit_station)}.to change {oystercard.balance}.by -6
     end
 
     it 'deducts minimum fare' do
-      expect{oystercard.touch_out(exit_station)}.to change {oystercard.balance}.by -Oystercard::MINIMUM_BALANCE
+      oystercard.touch_in(entry_station)
+      expect{oystercard.touch_out(exit_station)}.to change {oystercard.balance}.by -Oystercard::MINIMUM_FARE
     end
   end
+
 end
