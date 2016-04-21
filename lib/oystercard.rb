@@ -28,12 +28,8 @@ class Oystercard
   end
 
   def touch_out(station)
-    
+    @journeylog.finish station
     @entry_station = nil
-  end
-
-  def in_journey?
-    !!@entry_station
   end
 
   def deduct(amount)

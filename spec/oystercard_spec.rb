@@ -9,10 +9,6 @@ describe Oystercard do
     it 'creates a new card with a balance of 0' do
       expect(oystercard.balance).to eq 0
     end
-
-    it 'is initially not in use' do
-      expect(oystercard).not_to be_in_journey
-    end
   end
 
   it 'allows user to top up' do
@@ -32,10 +28,6 @@ describe Oystercard do
       before (:each) do
         oystercard.top_up(20)
         oystercard.touch_in(entry_station)
-      end
-
-      it 'touches in and reports in use' do
-        expect(oystercard).to be_in_journey
       end
     end
 
